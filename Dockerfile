@@ -4,11 +4,11 @@ MAINTAINER Karl Stoney <karl.stoney@hp.com>
 RUN yum -y install erlang logrotate && \
     yum -y clean all
 
-RUN wget http://www.rabbitmq.com/releases/rabbitmq-server/v3.4.2/rabbitmq-server-3.4.2-1.noarch.rpm && \
-    rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc && \
-    yum -y install rabbitmq-server-3.4.2-1.noarch.rpm && \
+RUN wget http://www.rabbitmq.com/releases/rabbitmq-server/v3.4.3/rabbitmq-server-3.4.3-1.noarch.rpm && \
+    rpm --import http://www.rabbitmq.com/releases/rabbitmq-server/v3.4.3/rabbitmq-server-3.4.3-1.noarch.rpm.asc && \
+    yum -y install rabbitmq-server-*.noarch.rpm && \
     yum -y clean all && \
-    rm rabbitmq-server-3.4.2-1.noarch.rpm
+    rm rabbitmq-server-*.noarch.rpm
 
 # Enable the relevant plugins
 RUN echo "[{rabbit, [{loopback_users, []}]}]." > /etc/rabbitmq/rabbitmq.config
