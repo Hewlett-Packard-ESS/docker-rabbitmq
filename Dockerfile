@@ -4,8 +4,8 @@ MAINTAINER Karl Stoney <karl.stoney@hp.com>
 RUN yum -y install erlang logrotate && \
     yum -y clean all
 
-RUN wget http://my.jambr.co.uk:9004/rabbitmq-server-3.4.3-1.noarch.rpm && \
-    rpm --import http://my.jambr.co.uk:9004/rabbitmq-server-3.4.3-1.noarch.rpm.asc && \
+RUN wget https://www.rabbitmq.com/releases/rabbitmq-server/v3.4.3/rabbitmq-server-3.4.3-1.noarch.rpm && \
+    rpm --import https://www.rabbitmq.com/releases/rabbitmq-server/v3.4.3/rabbitmq-server-3.4.3-1.noarch.rpm.asc && \
     yum -y install rabbitmq-server-*.noarch.rpm && \
     yum -y clean all && \
     rm rabbitmq-server-*.noarch.rpm
