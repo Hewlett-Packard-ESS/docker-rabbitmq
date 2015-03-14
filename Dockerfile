@@ -11,7 +11,7 @@ RUN wget https://www.rabbitmq.com/releases/rabbitmq-server/v3.5.0/rabbitmq-serve
     rm rabbitmq-server-*.noarch.rpm
 
 # Enable the relevant plugins
-# RUN /usr/sbin/rabbitmq-plugins enable --offline rabbitmq_management
+RUN /usr/sbin/rabbitmq-plugins enable --offline rabbitmq_management
 
 # Add the service and cookbook files
 COPY services/* /etc/supervisord.d/
