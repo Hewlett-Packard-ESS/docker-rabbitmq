@@ -3,7 +3,7 @@
 Builds on the hpess/chef image by installing rabbitmq, currently version 3.5.0-1
 
 ## Use
-Configuration is pretty limited at the moment as I haven't had time to give this container much TLC, we just needed a simple redis image for our development environment.
+Configuration is pretty limited at the moment as I haven't had time to give this container much TLC, we just needed a simple rabbitmq image for our development environment.
 
 Here's an example docker file:
 ```
