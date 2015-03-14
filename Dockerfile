@@ -1,17 +1,24 @@
 FROM hpess/chef:latest
 MAINTAINER Karl Stoney <karl.stoney@hp.com>
 
-RUN yum -y install erlang && \
+# Latest Erlang
+RUN yum -y install http://packages.erlang-solutions.com/site/esl/esl-erlang/FLAVOUR_3_general/esl-erlang_17.4-1~centos~6_amd64.rpm && \
     yum -y clean all
 
-RUN wget https://www.rabbitmq.com/releases/rabbitmq-server/v3.5.0/rabbitmq-server-3.5.0-1.noarch.rpm && \
-    rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc && \
-    yum -y install rabbitmq-server-3.5.0-1.noarch.rpm && \
-    yum -y clean all && \
-    rm rabbitmq-server-*.noarch.rpm
+# Latest RabbitMQ
+RUN cd /opt && \
+    wget --quiet https://www.rabbitmq.com/releases/rabbitmq-server/v3.5.0/rabbitmq-server-generic-unix-3.5.0.tar.gz && \
+    tar -xzf rabbitmq-* && \ 
+    rm -f *.tar.gz && \
+    mv rabbitmq* rabbitmq
+
+# Simple Config
+RUN mkdir -p /etc/rabbitmq/rabbitmq.conf.d && \ 
+    echo "NODENAME=rabbit@localhost" >> /etc/rabbitmq/rabbitmq.conf.d/hostname.conf
+ENV PATH /opt/rabbitmq/sbin:$PATH 
 
 # Enable the relevant plugins
-RUN /usr/sbin/rabbitmq-plugins enable --offline rabbitmq_management
+RUN su -c '/opt/rabbitmq/sbin/rabbitmq-plugins enable --offline rabbitmq_management' root
 
 # Add the service and cookbook files
 COPY services/* /etc/supervisord.d/

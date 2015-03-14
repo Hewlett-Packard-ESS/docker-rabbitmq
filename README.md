@@ -1,6 +1,6 @@
 ![RabbitMQ](/rabbitmq.jpg?raw=true "RabbitMQ")
 
-Builds on the hpess/chef image by installing rabbitmq, currently version 3.5.0-1
+Builds on the hpess/chef image by installing rabbitmq, currently version 3.5.0-1 on erlang 17.4.
 
 ## Use
 Configuration is pretty limited at the moment as I haven't had time to give this container much TLC, we just needed a simple rabbitmq image for our development environment.
