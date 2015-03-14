@@ -1,0 +1,8 @@
+rabbitmq:
+  hostname: 'rabbitmq'
+  image: hpess/rabbitmq
+  environment:
+    DEBUG: 'true'
+  ports: 
+    - "15672:15672"
+    - "5672:5672"
