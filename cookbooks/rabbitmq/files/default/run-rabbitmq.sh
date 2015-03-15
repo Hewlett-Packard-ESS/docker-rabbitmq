@@ -1,8 +1,10 @@
 #!/bin/bash
+set -e
 ulimit -n 1024
 
 HOSTNAME=$(hostname)
-PID_FILE="/storage/mnesia/rabbit\@$HOSTNAME.pid"
+PID_FILE=/storage/mnesia/rabbit\@$HOSTNAME.pid
+LOG_FILE=/storage/log/rabbit\@$HOSTNAME.log
 
 function run_cmd()
 {
@@ -11,13 +13,15 @@ function run_cmd()
 
 function start()
 {
+	mkdir -p /storage/log
+	touch $LOG_FILE
 	if [ -z "$CLUSTERED" ]; then
 		# Not clustered, just start
-        	/usr/sbin/rabbitmq-server >/dev/null &
+        	/usr/sbin/rabbitmq-server &
 	else
 		if [ -z "$CLUSTERED_WITH" ]; then
 			# Is clustered, but not specified who to cluster with
-        		/usr/sbin/rabbitmq-server >/dev/null &
+        		/usr/sbin/rabbitmq-server &
 		else
                		/usr/sbin/rabbitmq-server -detached
                 	rabbitmqctl stop_app
@@ -30,15 +34,30 @@ function start()
 
 		fi
 	fi
-	rabbitmqctl wait $PID_FILE
-	tail -f /storage/log/rabbit\@$HOSTNAME.log &
-	parent=$!
+	echo Waiting for RabbitMQ to start...
+	while [ ! -f $PID_FILE ]; do 
+		sleep 1
+		echo Waiting for PID file...
+	done
+	PID=`cat $PID_FILE`
+	echo PID file detected, waiting for PID $PID to start...
+	while [ ! kill -0 $PID > /dev/null 2>&1 ]; do
+		sleep 1
+		echo Waiting for Process to start...
+	done 
+	echo "Started (PID: $PID)! Tailing $LOG_FILE"
+	tail -f $LOG_FILE &
+	TAIL_PID=$!
 }
 
 function stop()
 {
+ 	echo Stopping RabbitMQ...
         /usr/sbin/rabbitmqctl stop
-	kill -TERM $parent
+	if [ -z "$TAIL_PID" ]; then
+		kill -TERM $TAIL_PID
+	fi
+	echo Stopped!
         exit 0
 }
 
