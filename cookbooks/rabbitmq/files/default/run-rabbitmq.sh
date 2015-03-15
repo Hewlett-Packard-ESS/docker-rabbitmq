@@ -23,7 +23,7 @@ function start()
 			# Is clustered, but not specified who to cluster with
         		/usr/sbin/rabbitmq-server &
 		else
-               		/usr/sbin/rabbitmq-server -detached
+               		/usr/sbin/rabbitmq-server &
                 	rabbitmqctl stop_app
                 	if [ -z "$RAM_NODE" ]; then
                         	rabbitmqctl join_cluster rabbit@$CLUSTERED_WITH
