@@ -16,6 +16,11 @@ The default username and password for the admin console on 15672 is 'guest' and 
 
 Of course you have the ability to override the rather simple configuration with your own config by adding rabbitmq.config to /storage volume.
 
+## Traps
+I've spent a silly amount of time ensuring that we trap all of the SIGTERM SIGKILL signals etc so that the instance/cluster remains stable, you can quite happily `docker restart <id>` or `docker stop <id> && docker stop <id>` and everything will continue to work well.
+
+I've also ensure that when you stop the containers, RabbitMQ is gracefully closed down rather than brutally killed by docker.
+
 ## Clustering
 This container supports clustering with some simple environment variables.  The docker-compose file below shows you how to create a three rabbit cluster:
 ```
