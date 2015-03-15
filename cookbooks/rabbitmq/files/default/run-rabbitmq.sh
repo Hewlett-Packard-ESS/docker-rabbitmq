@@ -15,25 +15,8 @@ function start()
 {
 	mkdir -p /storage/log
 	touch $LOG_FILE
-	if [ -z "$CLUSTERED" ]; then
-		# Not clustered, just start
-        	/usr/sbin/rabbitmq-server &
-	else
-		if [ -z "$CLUSTERED_WITH" ]; then
-			# Is clustered, but not specified who to cluster with
-        		/usr/sbin/rabbitmq-server &
-		else
-               		/usr/sbin/rabbitmq-server &
-                	rabbitmqctl stop_app
-                	if [ -z "$RAM_NODE" ]; then
-                        	rabbitmqctl join_cluster rabbit@$CLUSTERED_WITH
-                	else
-                        	rabbitmqctl join_cluster --ram rabbit@$CLUSTERED_WITH
-                	fi
-                	rabbitmqctl start_app
+	/usr/sbin/rabbitmq-server &
 
-		fi
-	fi
 	echo Waiting for RabbitMQ to start...
 	while [ ! -f $PID_FILE ]; do 
 		sleep 1
@@ -45,14 +28,30 @@ function start()
 		sleep 1
 		echo Waiting for Process to start...
 	done 
+
 	echo "Started (PID: $PID)! Tailing $LOG_FILE"
 	tail -f $LOG_FILE &
 	TAIL_PID=$!
+
+	# Setup clustering..
+	if [ ! -z "$CLUSTERED" ] && [ ! -z "$CLUSTERED_WITH" ]; then
+		if ! rabbitmqctl cluster_status | grep -q $CLUSTERED_WITH; then
+			rabbitmqctl stop_app
+			rabbitmqctl reset
+			if [ -z "$RAM_NODE" ]; then
+                        	rabbitmqctl join_cluster rabbit@$CLUSTERED_WITH
+                	else
+                        	rabbitmqctl join_cluster --ram rabbit@$CLUSTERED_WITH
+                	fi
+			rabbitmqctl start_app
+		fi
+	fi
 }
 
 function stop()
 {
  	echo Stopping RabbitMQ...
+        /usr/sbin/rabbitmqctl stop_app
         /usr/sbin/rabbitmqctl stop
 	if [ -z "$TAIL_PID" ]; then
 		kill -TERM $TAIL_PID
@@ -63,7 +62,8 @@ function stop()
 
 function restart()
 {
-        /usr/sbin/rabbitmqctl restart
+        /usr/sbin/rabbitmqctl stop_app
+        /usr/sbin/rabbitmqctl start_app
 }
 
 trap stop TERM INT
