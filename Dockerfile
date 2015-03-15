@@ -15,7 +15,7 @@ RUN su -c '/usr/sbin/rabbitmq-plugins enable rabbitmq_mqtt rabbitmq_stomp rabbit
 # Configure the environment a little
 ENV RABBITMQ_LOG_BASE /storage/log
 ENV RABBITMQ_MNESIA_BASE /storage/mnesia
-ENV RABBITMQ_CONFIG_FILE=/storage/rabbitmq.config
+ENV RABBITMQ_CONFIG_FILE=/storage/rabbitmq
 
 # Add the service and cookbook files
 COPY services/* /etc/supervisord.d/
