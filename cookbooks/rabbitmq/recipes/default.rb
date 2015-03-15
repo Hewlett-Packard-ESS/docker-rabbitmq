@@ -21,11 +21,3 @@ cookbook_file '/usr/local/bin/run-rabbitmq.sh' do
   group     'rabbitmq'
   action    :create
 end
-
-cookbook_file '/usr/local/bin/run-rabbitmq2.sh' do
-  source    'run-rabbitmq2.sh'
-  mode      '0755'
-  owner     'rabbitmq'
-  group     'rabbitmq'
-  action    :create
-end
