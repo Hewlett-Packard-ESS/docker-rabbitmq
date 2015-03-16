@@ -3,7 +3,7 @@ rabbit1:
   restart: always
   hostname: rabbit1
   environment:
-    - DEBUG=true
+    - erlang_cookie=myerlangcookie
   ports:
     - "5672:5672"
     - "15672:15672"
@@ -17,6 +17,7 @@ rabbit2:
   environment: 
    - clustered_with=rabbit1
    - ram_node=true
+   - erlang_cookie=myerlangcookie
   ports:
     - "5673:5672"
     - "15673:15672"
@@ -30,5 +31,6 @@ rabbit3:
     - rabbit2
   environment: 
    - clustered_with=rabbit1   
+   - erlang_cookie=myerlangcookie
   ports:
     - "5674:5672"

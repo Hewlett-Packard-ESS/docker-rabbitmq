@@ -6,18 +6,20 @@ template '/storage/rabbitmq.config' do
   action    :create_if_missing
 end
 
-cookbook_file '/var/lib/rabbitmq/.erlang.cookie' do
-  source    'erlang.cookie'
+erlang_cookie = ENV['erlang_cookie'] || 'ERLANGCOOKIE'
+
+file '/var/lib/rabbitmq/.erlang.cookie' do
+  content   erlang_cookie
   mode      '0400'
   owner     'rabbitmq'
   group     'rabbitmq'
   action    :create
 end
 
-cookbook_file '/usr/local/bin/run-rabbitmq.sh' do
-  source    'run-rabbitmq.sh'
-  mode      '0755'
-  owner     'rabbitmq'
-  group     'rabbitmq'
+file '/root/.erlang.cookie' do
+  content   erlang_cookie
+  mode      '0400'
+  owner     'root'
+  group     'root'
   action    :create
 end

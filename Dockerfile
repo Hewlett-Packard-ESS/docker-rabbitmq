@@ -22,6 +22,7 @@ ENV RABBITMQ_CONFIG_FILE=/storage/rabbitmq
 COPY services/* /etc/supervisord.d/
 COPY preboot/* /preboot/ 
 COPY cookbooks/ /chef/cookbooks/
+COPY run-rabbitmq.sh /usr/local/bin/run-rabbitmq.sh
 
 EXPOSE 15672 5672
 

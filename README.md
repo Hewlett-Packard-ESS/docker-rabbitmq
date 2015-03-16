@@ -59,6 +59,9 @@ rabbit3:
 ```
 __NOTE__: Because docker-compose will attempt to start all of these containers at the same time, the first time rabbit2 and rabbit3 come up, they will die, as rabbit1 isn't ready.  This is fine, as so long as you're using `docker-compose up -d` the containers will automatically restart and join the cluster.
 
+### Erlang Cookie
+The erlang cookie must be identical across all rabbit instances, you can specify one with the environment variable `erlang_cookie`, otherwise a default of 'ERLANGCOOKIE' will be used.
+
 ## License
 This docker application is distributed unter the MIT License (MIT).
 
