@@ -39,9 +39,8 @@ rabbit2:
   links:
     - rabbit1
   environment: 
-   - CLUSTERED=true
-   - CLUSTERED_WITH=rabbit1
-   - RAM_NODE=true
+   - clustered_with=rabbit1
+   - ram_node=true
   ports:
     - "5673:5672"
     - "15673:15672"
@@ -54,8 +53,7 @@ rabbit3:
     - rabbit1
     - rabbit2
   environment: 
-   - CLUSTERED=true
-   - CLUSTERED_WITH=rabbit1   
+   - clustered_with=rabbit1   
   ports:
     - "5674:5672"
 ```

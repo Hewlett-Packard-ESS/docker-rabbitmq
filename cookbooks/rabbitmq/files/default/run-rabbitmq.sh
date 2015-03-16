@@ -3,8 +3,8 @@ set -e
 ulimit -n 1024
 
 HOSTNAME=$(hostname)
-PID_FILE=/storage/mnesia/rabbit\@$HOSTNAME.pid
-LOG_FILE=/storage/log/rabbit\@$HOSTNAME.log
+pid_file=/storage/mnesia/rabbit\@$HOSTNAME.pid
+log_file=/storage/log/rabbit\@$HOSTNAME.log
 
 function run_cmd()
 {
@@ -14,34 +14,34 @@ function run_cmd()
 function start()
 {
 	mkdir -p /storage/log
-	touch $LOG_FILE
+	touch $log_file
 	/usr/sbin/rabbitmq-server &
 
 	echo Waiting for RabbitMQ to start...
-	while [ ! -f $PID_FILE ]; do 
+	while [ ! -f $pid_file ]; do 
 		sleep 1
-		echo Waiting for PID file...
+		echo Waiting for pid file...
 	done
-	PID=`cat $PID_FILE`
-	echo PID file detected, waiting for PID $PID to start...
-	while [ ! kill -0 $PID > /dev/null 2>&1 ]; do
+	pid=`cat $pid_file`
+	echo pid file detected, waiting for pid $pid to start...
+	while [ ! kill -0 $pid > /dev/null 2>&1 ]; do
 		sleep 1
 		echo Waiting for Process to start...
 	done 
 
-	echo "Started (PID: $PID)! Tailing $LOG_FILE"
-	tail -f $LOG_FILE &
-	TAIL_PID=$!
+	echo "Started (pid: $pid)! Tailing $log_file"
+	tail -f $log_file &
+	tail_pid=$!
 
 	# Setup clustering..
-	if [ ! -z "$CLUSTERED" ] && [ ! -z "$CLUSTERED_WITH" ]; then
-		if ! rabbitmqctl cluster_status | grep -q $CLUSTERED_WITH; then
+	if [ ! -z "$clustered_with" ]; then
+		if ! rabbitmqctl cluster_status | grep -q $clustered_with; then
 			rabbitmqctl stop_app
 			rabbitmqctl reset
-			if [ -z "$RAM_NODE" ]; then
-                        	rabbitmqctl join_cluster rabbit@$CLUSTERED_WITH
+			if [ -z "$ram_node" ]; then
+                        	rabbitmqctl join_cluster rabbit@$clustered_with
                 	else
-                        	rabbitmqctl join_cluster --ram rabbit@$CLUSTERED_WITH
+                        	rabbitmqctl join_cluster --ram rabbit@$clustered_with
                 	fi
 			rabbitmqctl start_app
 		fi
@@ -53,8 +53,8 @@ function stop()
  	echo Stopping RabbitMQ...
         /usr/sbin/rabbitmqctl stop_app
         /usr/sbin/rabbitmqctl stop
-	if [ -z "$TAIL_PID" ]; then
-		kill -TERM $TAIL_PID
+	if [ -z "$tail_pid" ]; then
+		kill -TERM $tail_pid
 	fi
 	echo Stopped!
         exit 0
