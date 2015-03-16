@@ -58,7 +58,7 @@ function start()
 				join_cluster
 			done
 			exit_code=$?
-			if [ $exit_code -eq 0 ]; then
+			if [ $exit_code -ne 0 ]; then
 				echo Failed to join cluster after a maximum of $max_tries attempts! >&2
 				exit $exit_code
 			fi
