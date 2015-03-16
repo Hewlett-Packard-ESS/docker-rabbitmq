@@ -19,7 +19,7 @@ Of course you have the ability to override the rather simple configuration with 
 ## Traps
 I've spent a silly amount of time ensuring that we trap all of the SIGTERM SIGKILL signals etc so that the instance/cluster remains stable, you can quite happily `docker restart <id>` or `docker stop <id> && docker stop <id>` and everything will continue to work well.
 
-I've also ensure that when you stop the containers, RabbitMQ is gracefully closed down rather than brutally killed by docker.
+I've also ensured that when you stop the containers, RabbitMQ is gracefully closed down rather than brutally killed by docker.
 
 ## Clustering
 This container supports clustering with some simple environment variables.  The docker-compose file below shows you how to create a three rabbit cluster:
@@ -57,7 +57,6 @@ rabbit3:
   ports:
     - "5674:5672"
 ```
-__NOTE__: Because docker-compose will attempt to start all of these containers at the same time, the first time rabbit2 and rabbit3 come up, they will die, as rabbit1 isn't ready.  This is fine, as so long as you're using `docker-compose up -d` the containers will automatically restart and join the cluster.
 
 ### Erlang Cookie
 The erlang cookie must be identical across all rabbit instances, you can specify one with the environment variable `erlang_cookie`, otherwise a default of 'ERLANGCOOKIE' will be used.
