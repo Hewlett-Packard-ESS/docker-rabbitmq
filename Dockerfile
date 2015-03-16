@@ -1,8 +1,6 @@
 FROM hpess/chef:latest
 MAINTAINER Karl Stoney <karl.stoney@hp.com>
 
-ENV https_proxy=http://proxy.sdc.hp.com:8080
-ENV http_proxy=http://proxy.sdc.hp.com:8080
 # Latest RabbitMQ
 RUN wget --quiet https://www.rabbitmq.com/releases/rabbitmq-server/v3.5.0/rabbitmq-server-3.5.0-1.noarch.rpm && \
     rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc && \
