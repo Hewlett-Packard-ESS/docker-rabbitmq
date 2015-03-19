@@ -1,1 +1,1 @@
-docker build -t hpess/rabbitmq:latest .
+docker build -t hpess/rabbitmq:master .

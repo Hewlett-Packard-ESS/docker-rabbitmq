@@ -1,5 +1,5 @@
 rabbit1:
-  image: hpess/rabbitmq 
+  image: hpess/rabbitmq:master
   restart: always
   hostname: rabbit1
   environment:
@@ -9,7 +9,7 @@ rabbit1:
     - "15672:15672"
 
 rabbit2:
-  image: hpess/rabbitmq 
+  image: hpess/rabbitmq:master
   restart: always
   hostname: rabbit2
   links:
@@ -23,7 +23,7 @@ rabbit2:
     - "15673:15672"
 
 rabbit3:
-  image: hpess/rabbitmq 
+  image: hpess/rabbitmq:master
   restart: always
   hostname: rabbit3
   links:
