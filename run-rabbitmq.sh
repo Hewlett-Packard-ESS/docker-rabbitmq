@@ -90,7 +90,4 @@ trap stop TERM INT
 trap restart SIGHUP
 
 start
-
-while true; do
-	sleep 1000 & wait
-done
+wait $tail_pid
