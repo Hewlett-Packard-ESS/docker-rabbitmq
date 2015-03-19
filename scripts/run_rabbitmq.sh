@@ -25,20 +25,21 @@ function start()
 	mkdir -p /storage/log
 	touch $log_file
 	/usr/sbin/rabbitmq-server &
+    rabbitmq_server_pid=$!
 
-	echo Waiting for RabbitMQ to start...
+	debug "Waiting for RabbitMQ to start..."
 	while [ ! -f $pid_file ]; do 
 		sleep 1
-		echo Waiting for pid file...
+		debug "Waiting for pid file..."
 	done
-	pid=`cat $pid_file`
-	echo pid file detected, waiting for pid $pid to start...
-	while [ ! kill -0 $pid > /dev/null 2>&1 ]; do
+	rabbitmq_pid=`cat $pid_file`
+	debug "PID file detected, waiting for PID $rabbitmq_pid to start..."
+	while [ ! kill -0 $rabbitmq_pid > /dev/null 2>&1 ]; do
 		sleep 1
-		echo Waiting for Process to start...
+		debug "Waiting for Process to start..."
 	done 
 
-	echo "Started (pid: $pid)! Tailing $log_file"
+	info "RabbitMQ Started (PID: $rabbitmq_pid, ServerPid: $rabbitmq_server_pid)!"
 	tail -f $log_file &
 	tail_pid=$!
 
@@ -53,14 +54,14 @@ function start()
 			join_cluster
 			while [ $? -ne 0 ] && [ $total_tries -lt $max_tries ]; do
 				total_tries=$(( $total_tries+1 ))
-				echo Failed to join cluster, will try again in 5 seconds. \(Attempt \#$total_tries\)
+				warn "Failed to join cluster, will try again in 5 seconds. \(Attempt \#$total_tries\)"
 				sleep 5
 				join_cluster
 			done
-			exit_code=$?
-			if [ $exit_code -ne 0 ]; then
+			cluster_code=$?
+			if [ $cluster_code -ne 0 ]; then
 				echo Failed to join cluster after a maximum of $max_tries attempts! >&2
-				exit $exit_code
+				exit $cluster_code
 			fi
 			set -e
 			rabbitmqctl start_app
@@ -70,14 +71,13 @@ function start()
 
 function stop()
 {
-	echo Stopping RabbitMQ...
+	info "Stopping RabbitMQ..."
 	/usr/sbin/rabbitmqctl stop_app
 	/usr/sbin/rabbitmqctl stop
-	if [ -z "$tail_pid" ]; then
-		kill -TERM $tail_pid
-	fi
-	echo Stopped!
-	exit 0
+	exit_code=$?
+	debug "Stopped (Exit Code: $exit_code)."
+	kill $tail_pid >/dev/null 2>&1
+	exit $exit_code
 }
 
 function restart()
@@ -90,7 +90,4 @@ trap stop TERM INT
 trap restart SIGHUP
 
 start
-
-while true; do
-	sleep 1000 & wait
-done
+wait $rabbitmq_server_pid

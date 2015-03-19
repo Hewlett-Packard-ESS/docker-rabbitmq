@@ -1,4 +1,4 @@
-FROM hpess/chef:latest
+FROM hpess/chef:master
 MAINTAINER Karl Stoney <karl.stoney@hp.com>
 
 # Latest RabbitMQ
@@ -9,7 +9,7 @@ RUN wget --quiet https://www.rabbitmq.com/releases/rabbitmq-server/v3.5.0/rabbit
     rm rabbitmq-server-*.noarch.rpm
 
 # Enable the relevant plugins
-RUN su -c '/usr/sbin/rabbitmq-plugins --offline enable rabbitmq_mqtt rabbitmq_stomp rabbitmq_management rabbitmq_management_agent rabbitmq_management_visualiser rabbitmq_federation rabbitmq_federation_management sockjs' root
+RUN su -c '/usr/sbin/rabbitmq-plugins --offline enable rabbitmq_management' root
 
 # Configure the environment a little
 ENV RABBITMQ_LOG_BASE /storage/log
@@ -20,7 +20,7 @@ ENV RABBITMQ_CONFIG_FILE=/storage/rabbitmq
 COPY services/* /etc/supervisord.d/
 COPY preboot/* /preboot/ 
 COPY cookbooks/ /chef/cookbooks/
-COPY run-rabbitmq.sh /usr/local/bin/run-rabbitmq.sh
+COPY scripts/* /usr/local/bin/
 
 EXPOSE 15672 5672
 
