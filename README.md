@@ -1,6 +1,6 @@
 ![RabbitMQ](/rabbitmq.jpg?raw=true "RabbitMQ")
 
-Builds on the hpess/chef image by installing rabbitmq, currently version 3.5.0-1.
+Builds on the hpess/chef image by installing rabbitmq, currently version 3.5.3-1.
 
 ## Use
 Here's an example docker file to spin up a single rabbitmq instance:
