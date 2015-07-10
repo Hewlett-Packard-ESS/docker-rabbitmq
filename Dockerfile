@@ -10,6 +10,8 @@ RUN wget --quiet https://www.rabbitmq.com/releases/rabbitmq-server/v3.5.3/rabbit
 
 # Enable the relevant plugins
 RUN su -c '/usr/sbin/rabbitmq-plugins --offline enable rabbitmq_management' root
+RUN su -c '/usr/sbin/rabbitmq-plugins --offline enable rabbitmq_shovel' root
+RUN su -c '/usr/sbin/rabbitmq-plugins --offline enable rabbitmq_shovel_management' root
 
 # Configure the environment a little
 ENV RABBITMQ_LOG_BASE /storage/log
